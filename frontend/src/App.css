@@ -1,0 +1,16 @@
+.dataCell:hover {
+    background-color: #cfe2ff;
+}
+
+.logo {
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.logoImage {
+    margin-right: 10px;
+}
+
+.week {
+    margin-top: -20px;
+}

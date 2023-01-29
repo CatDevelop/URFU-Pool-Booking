@@ -1,50 +1,132 @@
-import React from "react";
+import React, {useState} from "react";
 import Toast from "react-bootstrap/Toast";
 import Form from "react-bootstrap/Form";
 import ToastContainer from "react-bootstrap/ToastContainer";
-import Button from "react-bootstrap/Button";
+import LoadingButton from "./LoadingButton";
+import {useForm} from "react-hook-form";
 
-function PlacementExample() {
-  return (
-    <ToastContainer className="p-3" position={"top-center"}>
-      <Toast>
-        <Toast.Header closeButton={false}>
-          <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
-          <strong className="me-auto">УрФУ</strong>
-          <small>Только что</small>
-        </Toast.Header>
-        <Toast.Body>
-          <Form.Group className="mb-3">
-          <Form.Label>Номер карты</Form.Label>
-          <Form.Control
-              type="tel"
-              name="number"
-              placeholder="0000 0000 0000 0000"
-            />
-            <Form.Label>Имя владельца</Form.Label>
-            <Form.Control
-              type="tel"
-              name="name"
-              placeholder="Имя"
-            />
-            <Form.Label>Срок действия</Form.Label>
-            <Form.Control
-              type="tel"
-              name="expiry"
-              placeholder="0101"
-            />
-            <Form.Label>CVC</Form.Label>
-            <Form.Control
-              type="tel"
-              name="cvc"
-              placeholder="CVC"
-            />
-          </Form.Group>
-          <Button type = "submit">Оплатить</Button>
-          </Toast.Body>
-      </Toast>
-    </ToastContainer>
-  );
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import {useDispatch} from "react-redux";
+import {book} from "../store/DataSlice";
+
+function PlacementExample(props) {
+    const dispatch = useDispatch();
+    const [isLoading, setLoading] = useState(false);
+    const {register, handleSubmit, formState: {errors}} = useForm({
+        defaultValues: {
+            card_number: '',
+            card_name: '',
+            card_date: '',
+            card_cvc: '',
+        },
+        mode: "onBlur"
+    });
+
+    const onSubmit = (payload) => {
+        const data = {
+            ...props.data,
+            cardNumber: payload.card_number,
+            cardName: payload.card_name,
+            cardDate: payload.card_date,
+            cardCVC: Number(payload.card_cvc)
+        };
+
+        const bookToast = toast.loading("Отправляю запрос на сервер...")
+
+        dispatch(book(data)).then(response => {
+            console.log(response);
+            if (response.payload.status !== 200)
+                toast.update(bookToast, {
+                    render: response.payload.error,
+                    type: "error",
+                    isLoading: false,
+                    autoClose: 5000
+                });
+            else {
+                props.close();
+                props.hideModal();
+                toast.update(bookToast, {
+                    render: response.payload.data,
+                    type: "success",
+                    isLoading: false,
+                    autoClose: 5000
+                });
+            }
+            setLoading(false);
+        });
+    };
+
+    return (<ToastContainer className="p-3" position={"top-center"}>
+        <Toast onClose={props.close} animation={true} show={props.show}>
+            <Toast.Header closeButton={true}>
+                <img src="holder.js/20x20?text=%20" className="rounded me-2" alt=""/>
+                <strong className="me-auto">УрФУ</strong>
+                {/*<small>Только что</small>*/}
+            </Toast.Header>
+            <Toast.Body>
+                <Form onSubmit={handleSubmit(onSubmit)}>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Номер карты</Form.Label>
+                        <Form.Control
+                            {...register(
+                                'card_number',
+                                {
+                                    required: true,
+                                    pattern: {
+                                        value: /^[0-9]{4} [0-9]{4} [0-9]{4} [0-9]{4}$/, message: "Введите номер карты"
+                                    }
+                                })}
+                            type="text"
+                            placeholder="0000 0000 0000 0000"
+                            className={errors?.card_number && "is-invalid"}
+                        />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Имя владельца</Form.Label>
+                        <Form.Control
+                            {...register('card_name', {
+                                required: "Введите имя владельца карты"
+                            })}
+                            type="text"
+                            placeholder="Имя"
+                            className={errors?.card_name && "is-invalid"}
+                        />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Срок действия</Form.Label>
+                        <Form.Control
+                            {...register('card_date', {
+                                required: true,
+                                pattern: {
+                                    value: /^[0-9]{2}\/[0-9]{2}$/i, message: "Введите срок действия карты"
+                                }
+                            })}
+                            type="text"
+                            placeholder="31/12"
+                            className={errors?.card_date && "is-invalid"}
+                        />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label>CVC</Form.Label>
+                        <Form.Control
+                            {...register('card_cvc', {
+                                required: true,
+                                pattern: {
+                                    value: /^[0-9]{3}$/,
+                                    message: "Введите CVC код"
+                                }
+                            })}
+                            type="text"
+                            placeholder="CVC"
+                            className={errors?.card_cvc && "is-invalid"}
+                        />
+                    </Form.Group>
+                    <LoadingButton type="submit" isLoading={isLoading} setLoading={setLoading}/>
+                </Form>
+            </Toast.Body>
+        </Toast>
+    </ToastContainer>);
 }
 
 export default PlacementExample;

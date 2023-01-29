@@ -1,85 +1,76 @@
 import Table from "react-bootstrap/Table";
+import {useEffect} from "react";
+import {getData} from "../store/DataSlice";
+import {useDispatch, useSelector} from "react-redux";
 
-export default function MainTable({ setID }) {
-  return (
-    <Table striped bordered hover size="sm">
-      <thead>
-        <tr>
-          <th></th>
-          <th>Пн.</th>
-          <th>Вт.</th>
-          <th>Ср.</th>
-          <th>Чт.</th>
-          <th>Пт.</th>
-          <th>Сб.</th>
-          <th>Вс.</th>
-        </tr>
-      </thead>
-      <tbody>
-        {time.map((time, i) => (
-          <tr key={i}>
-            <td>{time}</td>
-            {data[time]?.map((e, i) => (
-              <td
-                key={i}
-                style={styleTd}
-                onClick={() => setID({ time: time, day: i, seats: e })}
-              >
-                {e + " дор."}
-              </td>
+export default function MainTable({setID}) {
+    const data = useSelector((state) => state.data.data);
+    const week = useSelector((state) => state.data.currentWeek);
+
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(getData(week));
+    }, [week]);
+
+    if (!data) return;
+
+    return (
+        <Table striped bordered hover responsive size="md">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Пн.</th>
+                <th>Вт.</th>
+                <th>Ср.</th>
+                <th>Чт.</th>
+                <th>Пт.</th>
+                <th>Сб.</th>
+                <th>Вс.</th>
+            </tr>
+            </thead>
+            <tbody>
+            {time.map((time, i) => (
+                <tr key={i}>
+                    <td>{time}</td>
+                    {data[time]?.map((e, i) => (
+                        <td
+                            className="dataCell"
+                            key={i}
+                            style={styleTd}
+                            onClick={() => setID({time: time, day: i, seats: e})}
+                        >
+                            {e + " дор."}
+                        </td>
+                    ))}
+                </tr>
             ))}
-          </tr>
-        ))}
-      </tbody>
-    </Table>
-  );
+            </tbody>
+        </Table>
+    );
 }
 
-const styleTd = { cursor: "pointer" };
+const styleTd = {cursor: "pointer"};
 
-const data = {
-  "6:30": [6, 6, 6, 6, 6, 6, 6],
-  "7:15": [6, 6, 6, 6, 6, 6, 6],
-  "8:00": [6, 6, 6, 6, 6, 6, 6],
-  "8:45": [6, 6, 6, 6, 6, 6, 6],
-  "9:30": [6, 6, 6, 6, 6, 6, 6],
-  "10:15": [6, 6, 6, 6, 6, 6, 6],
-  "11:00": [6, 6, 6, 6, 6, 6, 6],
-  "11:45": [6, 6, 6, 6, 6, 6, 6],
-  "12:30": [6, 6, 6, 6, 6, 6, 6],
-  "13:15": [6, 6, 6, 6, 6, 6, 6],
-  "14:00": [6, 6, 6, 6, 6, 6, 6],
-  "14:45": [6, 6, 6, 6, 6, 6, 6],
-  "15:30": [6, 6, 6, 6, 6, 6, 6],
-  "16:15": [6, 6, 6, 6, 6, 6, 6],
-  "17:00": [6, 6, 6, 6, 6, 6, 6],
-  "17:45": [6, 6, 6, 6, 6, 6, 6],
-  "18:30": [6, 6, 6, 6, 6, 6, 6],
-  "19:15": [6, 6, 6, 6, 6, 6, 6],
-  "20:00": [6, 6, 6, 6, 6, 6, 6],
-  "20:45": [6, 6, 6, 6, 6, 6, 6],
-  "21:30": [6, 6, 6, 6, 6, 6, 6],
-};
 const time = [
-  "6:30",
-  "7:15",
-  "8:00",
-  "8:45",
-  "9:30",
-  "10:15",
-  "11:00",
-  "11:45",
-  "12:30",
-  "13:15",
-  "14:00",
-  "14:45",
-  "15:30",
-  "16:15",
-  "17:00",
-  "17:45",
-  "18:30",
-  "19:15",
-  "20:00",
-  "20:45",
-  "21:30",
+    "6:30",
+    "7:15",
+    "8:00",
+    "8:45",
+    "9:30",
+    "10:15",
+    "11:00",
+    "11:45",
+    "12:30",
+    "13:15",
+    "14:00",
+    "14:45",
+    "15:30",
+    "16:15",
+    "17:00",
+    "17:45",
+    "18:30",
+    "19:15",
+    "20:00",
+    "20:45",
+    "21:30",
 ];
