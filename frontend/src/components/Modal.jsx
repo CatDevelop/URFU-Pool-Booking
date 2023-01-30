@@ -73,7 +73,7 @@ export default function MyModal(props) {
                         <Form.Control
                             {...register('phone_number', {
                                 required: true, pattern: {
-                                    value: /^\+?[1-9][0-9]{7,14}$/, message: "Введите номер телефона"
+                                    value: /^[0-9]{11}$/, message: "Введите номер телефона"
                                 }
                             })}
                             disabled={toast}
