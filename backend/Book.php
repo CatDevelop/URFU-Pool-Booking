@@ -148,8 +148,6 @@
 
 	$A2 = $Link->query("INSERT INTO bookings (week, day, startTime, durationCount, seatsCount, phone, cardNumber, cardName, cardDate, cardCVC) VALUES('$week', '$day', '$startTimeNumber', '$durationCount', '$seatsCount', '$phone', '$cardNumber', '$cardName', '$cardDate', '$cardCVC')"); 
 
-	SendResponse("Вы успешно забронировали дорожки: $seatsCount шт!");
-
 	if($A2) // Вывод в приложение
 		SendResponse("Вы успешно забронировали дорожки: $seatsCount шт!");
 	else
