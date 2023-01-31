@@ -9,6 +9,7 @@ import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {useDispatch} from "react-redux";
 import {book} from "../store/DataSlice";
+import Button from "react-bootstrap/Button";
 
 function PlacementExample(props) {
     const dispatch = useDispatch();
@@ -22,8 +23,11 @@ function PlacementExample(props) {
         },
         mode: "onBlur"
     });
+    const handleClick = () => setLoading(true);
 
     const onSubmit = (payload) => {
+        if (!isLoading)
+            handleClick();
         const data = {
             ...props.data,
             cardNumber: payload.card_number,
@@ -122,7 +126,13 @@ function PlacementExample(props) {
                             className={errors?.card_cvc && "is-invalid"}
                         />
                     </Form.Group>
-                    <LoadingButton type="submit" isLoading={isLoading} setLoading={setLoading}/>
+                    <Button variant="primary"
+                            disabled={isLoading}
+                            type="submit"
+                            //onClick={!isLoading ? handleClick : null}
+                        >
+                        {isLoading ? 'Загрузка…' : 'Оплатить'}
+                    </Button>
                 </Form>
             </Toast.Body>
         </Toast>
