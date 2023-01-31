@@ -1,5 +1,5 @@
 <?php
-	header('Access-Control-Allow-Origin: http://localhost:3000');  
+	header('Access-Control-Allow-Origin: *');  
 	header('Access-Control-Allow-Methods: OPTIONS, POST');
 	header("Access-Control-Allow-Headers: Content-Type");
 	header('Content-Type: application/json; charset=utf-8');
@@ -23,7 +23,6 @@
 		empty($cardDate) or 
 		empty($cardName) or 
 		empty($cardNumber) or
-		empty($day) or
 		empty($durationCount) or
 		empty($phone) or
 		empty($seatsCount) or
@@ -54,10 +53,10 @@
 
 	$cardDateExplode = explode('/', $cardDate);
 
-	if((int)$cardDateExplode[0]>31 || (int)$cardDateExplode[0]<0)
+	if((int)$cardDateExplode[0]>12 || (int)$cardDateExplode[0]<0)
 		ThrowError(400, "Неверный формат срока действия карты!");
 
-	if((int)$cardDateExplode[1]>12 || (int)$cardDateExplode[1]<0)
+	if((int)$cardDateExplode[1]>99 || (int)$cardDateExplode[1]<0)
 		ThrowError(400, "Неверный формат срока действия карты!");
 
 	if(!preg_match("/^[a-zA-Z]+ [a-zA-Z]+$/i", $cardName))
