@@ -26,8 +26,8 @@ function PlacementExample(props) {
     const handleClick = () => setLoading(true);
 
     const onSubmit = (payload) => {
-        if (!isLoading)
-            handleClick();
+        // if (!isLoading)
+        //     handleClick();
         const data = {
             ...props.data,
             cardNumber: payload.card_number,
