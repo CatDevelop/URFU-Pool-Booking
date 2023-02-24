@@ -44,7 +44,7 @@ export const getData = createAsyncThunk(
 
 const initialState = {
     data: null,
-    currentWeek: 9,
+    currentWeek: 8,
 };
 
 const dataSlice = createSlice({
